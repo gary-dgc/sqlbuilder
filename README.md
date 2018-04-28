@@ -1,7 +1,10 @@
 SQL Builder
 ===========
 
-A dynamic SQL builder for Java language. inspired by 
+A dynamic SQL builder for Java language.  
+inspired by [sql-builder project](https://github.com/jonathanhds/sql-builder), but this is a totally new project.   
+it only depends on Guava library, and it only care about the SQL building without involving Jdbc library.
+
 Examples
 =======
 Some usage examples:
