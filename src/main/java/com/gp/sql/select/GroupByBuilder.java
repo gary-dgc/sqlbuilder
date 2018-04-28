@@ -70,12 +70,7 @@ public class GroupByBuilder {
 	 **/
 	public GroupByBuilder and(String condition) {
 		
-		if(groupBy.having == null) {
-			Condition cond = new Condition(condition);
-			groupBy.having = cond;
-		}else {
-			groupBy.having.add(condition, Operator.AND);
-		}
+		add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -84,11 +79,17 @@ public class GroupByBuilder {
 	 **/
 	public GroupByBuilder or(String condition) {
 		
+		add(condition, Operator.OR);
+		return this;
+	}
+	
+	private GroupByBuilder add(String condition, Operator op) {
+		
 		if(groupBy.having == null) {
 			Condition cond = new Condition(condition);
 			groupBy.having = cond;
 		}else {
-			groupBy.having.add(condition, Operator.OR);
+			groupBy.having.add(condition, op);
 		}
 		return this;
 	}

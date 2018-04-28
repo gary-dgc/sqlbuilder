@@ -239,7 +239,7 @@ public class SelectBuilder extends BaseBuilder{
 		return add(condConsumer, Operator.OR);
 	}
 	
-	public SelectBuilder add(String condition, Operator op) {
+	private SelectBuilder add(String condition, Operator op) {
 		
 		if(null == select.getWhere()) {
 			Condition cond = new Condition(condition);
