@@ -100,7 +100,11 @@ public class Select {
 		if(distinct) {
 			builder.append("DISTINCT ");
 		}
-		builder.append(Joiner.on(", ").join(columns)).append(BaseBuilder.NEW_LINE);
+		if(columns.size() == 0) {
+			builder.append("* ");
+		}else {
+			builder.append(Joiner.on(", ").join(columns)).append(BaseBuilder.NEW_LINE);
+		}
 		
 		builder.append("FROM ").append(BaseBuilder.NEW_LINE);
 		builder.append(Joiner.on("," + BaseBuilder.NEW_LINE).join(tables));
