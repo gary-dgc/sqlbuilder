@@ -45,7 +45,7 @@ Select sql = SqlBuilder.select( sel -> {
 	sel.orderBy("a","b","c");
 	sel.orderBy("f", OrderType.DESC);
 	
-	sel.limit();
+	sel.limit(1, 15);
 });
 ```
 
@@ -64,7 +64,7 @@ c.f = 1 OR a='f' OR (pp = '1' AND m.f = c)
 GROUP BY a, c 
 HAVING a='4' AND b = 4
 ORDER BY a, b, c, f DESC
-LIMIT ? OFFSET ?
+LIMIT 15 OFFSET 1
 ```
 Delete
 -------
