@@ -21,13 +21,20 @@ import com.gp.sql.update.UpdateBuilder;
  * 
  **/
 public class SqlBuilder {
-
 	/**
 	 * Get the delete builder 
 	 **/
 	public static DeleteBuilder delete () {
 		DeleteBuilder builder = new DeleteBuilder();
 		return builder;
+	}
+	
+	/**
+	 * Get the delete builder on specified table
+	 **/
+	public static DeleteBuilder delete (String table) {
+		DeleteBuilder builder = new DeleteBuilder();
+		return builder.from(table);
 	}
 	
 	/**
@@ -48,6 +55,14 @@ public class SqlBuilder {
 	}
 	
 	/**
+	 * Get the insert builder into specified table
+	 **/
+	public static InsertBuilder insert (String table) {
+		InsertBuilder builder = new InsertBuilder();
+		return builder.into(table);
+	}
+	
+	/**
 	 * Get the insert support lambda function
 	 **/
 	public static Insert insert (Consumer<InsertBuilder> insConsumer) {
@@ -62,6 +77,14 @@ public class SqlBuilder {
 	public static UpdateBuilder update () {
 		UpdateBuilder builder = new UpdateBuilder();
 		return builder;
+	}
+	
+	/**
+	 * Get the update builder on specified table
+	 **/
+	public static UpdateBuilder update (String table) {
+		UpdateBuilder builder = new UpdateBuilder();
+		return builder.table(table);
 	}
 	
 	/**
@@ -90,6 +113,14 @@ public class SqlBuilder {
 		SelectBuilder builder = new SelectBuilder();
 		
 		return builder;
+	}
+	
+	/**
+	 * Get the select builder on specified table
+	 **/
+	public static SelectBuilder select(String table) {
+		SelectBuilder builder = new SelectBuilder();
+		return builder.from(table);
 	}
 	
 	/**
