@@ -101,6 +101,16 @@ public class InsertBuilder extends BaseBuilder{
 	}
 	
 	/**
+	 * Assign the column with question mark as value place holder
+	 * 
+	 **/
+	public InsertBuilder column(String column) {
+		
+		insert.setColumn(column, "?");
+		return this;
+	}
+	
+	/**
 	 * Assign the column with value
 	 * 
 	 **/

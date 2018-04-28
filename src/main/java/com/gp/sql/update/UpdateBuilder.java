@@ -7,6 +7,8 @@ import com.gp.sql.BaseBuilder;
 import com.gp.sql.ColumnBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
+import com.gp.sql.BaseBuilder.Operator;
+import com.gp.sql.delete.DeleteBuilder;
 
 /**
  * The update builder help to weave the update SQL
@@ -159,6 +161,95 @@ public class UpdateBuilder extends BaseBuilder{
 		return this;
 	}
 
+	/**
+	 * Where AND setting, assign the condition directly
+	 * 
+	 * <pre>
+	 * 		builder.where("a = 1");
+	 *      builder.and("b = 'c'");
+	 *  -- the output is;
+	 *     a = 1 AND b = 'c'
+	 * </pre>
+	 **/
+	public UpdateBuilder and(String condition) {
+		
+		if(null == update.getWhere()) {
+			Condition cond = new Condition(condition);
+			update.setWhere(cond);
+		}else {
+			update.getWhere().add(condition, Operator.AND);
+		}
+		return this;
+	}
+	
+	/**
+	 * Where AND condition setting with lambda function
+	 * <pre>
+	 * 	c2 -> {
+	 *		c2.and("pp = '1'");
+	 *		c2.and("m.f = c");
+	 *	}
+	 * </pre>
+	 **/
+	public UpdateBuilder and(Consumer<ConditionBuilder> condConsumer) {
+		
+		return add(condConsumer, Operator.AND);
+	}
+	
+	/**
+	 * Where OR setting, assign the condition directly
+	 * 
+	 * <pre>
+	 * 		builder.where("a = 1");
+	 *      builder.or("b = 'c'");
+	 *  -- the output is;
+	 *     a = 1 OR b = 'c'
+	 * </pre>
+	 **/
+	public UpdateBuilder or(String condition) {
+		
+		if(null == update.getWhere()) {
+			Condition cond = new Condition(condition);
+			update.setWhere(cond);
+		}else {
+			update.getWhere().add(condition, Operator.OR);
+		}
+		return this;
+	}
+	
+	/**
+	 * Where AND condition setting with lambda function
+	 * <pre>
+	 * 	c2 -> {
+	 *		c2.and("pp = '1'");
+	 *		c2.and("m.f = c");
+	 *	}
+	 * </pre>
+	 **/
+	public UpdateBuilder or(Consumer<ConditionBuilder> condConsumer) {
+		
+		return add(condConsumer, Operator.OR);
+	}
+	
+	private UpdateBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {
+		
+		ConditionBuilder builder = new ConditionBuilder();
+		condConsumer.accept(builder);
+		Condition cond = builder.getCondition();
+		if(null == update.getWhere()) {
+			
+			update.setWhere(cond);
+		}else {
+			if(cond.isSingle()) {
+				update.getWhere().add(cond.toString(), op);
+			}else {
+				update.getWhere().add( "(" + cond.toString() + ")", op);
+			}
+		}
+	
+		return this;
+	}
+	
 	@Override
 	public String build() {
 		

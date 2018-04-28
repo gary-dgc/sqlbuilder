@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
+import com.gp.sql.BaseBuilder.Operator;
+import com.gp.sql.delete.DeleteBuilder;
 
 /**
  * The select builder help to weave the select SQL
@@ -187,6 +189,95 @@ public class SelectBuilder extends BaseBuilder{
 		return this;
 	}
 
+	/**
+	 * Where AND setting, assign the condition directly
+	 * 
+	 * <pre>
+	 * 		builder.where("a = 1");
+	 *      builder.and("b = 'c'");
+	 *  -- the output is;
+	 *     a = 1 AND b = 'c'
+	 * </pre>
+	 **/
+	public SelectBuilder and(String condition) {
+		
+		if(null == select.getWhere()) {
+			Condition cond = new Condition(condition);
+			select.setWhere(cond);
+		}else {
+			select.getWhere().add(condition, Operator.AND);
+		}
+		return this;
+	}
+	
+	/**
+	 * Where AND condition setting with lambda function
+	 * <pre>
+	 * 	c2 -> {
+	 *		c2.and("pp = '1'");
+	 *		c2.and("m.f = c");
+	 *	}
+	 * </pre>
+	 **/
+	public SelectBuilder and(Consumer<ConditionBuilder> condConsumer) {
+		
+		return add(condConsumer, Operator.AND);
+	}
+	
+	/**
+	 * Where OR setting, assign the condition directly
+	 * 
+	 * <pre>
+	 * 		builder.where("a = 1");
+	 *      builder.or("b = 'c'");
+	 *  -- the output is;
+	 *     a = 1 OR b = 'c'
+	 * </pre>
+	 **/
+	public SelectBuilder or(String condition) {
+		
+		if(null == select.getWhere()) {
+			Condition cond = new Condition(condition);
+			select.setWhere(cond);
+		}else {
+			select.getWhere().add(condition, Operator.OR);
+		}
+		return this;
+	}
+	
+	/**
+	 * Where AND condition setting with lambda function
+	 * <pre>
+	 * 	c2 -> {
+	 *		c2.and("pp = '1'");
+	 *		c2.and("m.f = c");
+	 *	}
+	 * </pre>
+	 **/
+	public SelectBuilder or(Consumer<ConditionBuilder> condConsumer) {
+		
+		return add(condConsumer, Operator.OR);
+	}
+	
+	private SelectBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {
+		
+		ConditionBuilder builder = new ConditionBuilder();
+		condConsumer.accept(builder);
+		Condition cond = builder.getCondition();
+		if(null == select.getWhere()) {
+			
+			select.setWhere(cond);
+		}else {
+			if(cond.isSingle()) {
+				select.getWhere().add(cond.toString(), op);
+			}else {
+				select.getWhere().add( "(" + cond.toString() + ")", op);
+			}
+		}
+	
+		return this;
+	}
+	
 	/**
 	 * Assign the group by columns 
 	 **/

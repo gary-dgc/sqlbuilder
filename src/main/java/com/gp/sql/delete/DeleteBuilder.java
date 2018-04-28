@@ -98,6 +98,95 @@ public class DeleteBuilder extends BaseBuilder{
 	}
 
 	/**
+	 * Where AND setting, assign the condition directly
+	 * 
+	 * <pre>
+	 * 		builder.where("a = 1");
+	 *      builder.and("b = 'c'");
+	 *  -- the output is;
+	 *     a = 1 AND b = 'c'
+	 * </pre>
+	 **/
+	public DeleteBuilder and(String condition) {
+		
+		if(null == delete.getWhere()) {
+			Condition cond = new Condition(condition);
+			delete.setWhere(cond);
+		}else {
+			delete.getWhere().add(condition, Operator.AND);
+		}
+		return this;
+	}
+	
+	/**
+	 * Where AND condition setting with lambda function
+	 * <pre>
+	 * 	c2 -> {
+	 *		c2.and("pp = '1'");
+	 *		c2.and("m.f = c");
+	 *	}
+	 * </pre>
+	 **/
+	public DeleteBuilder and(Consumer<ConditionBuilder> condConsumer) {
+		
+		return add(condConsumer, Operator.AND);
+	}
+	
+	/**
+	 * Where OR setting, assign the condition directly
+	 * 
+	 * <pre>
+	 * 		builder.where("a = 1");
+	 *      builder.or("b = 'c'");
+	 *  -- the output is;
+	 *     a = 1 OR b = 'c'
+	 * </pre>
+	 **/
+	public DeleteBuilder or(String condition) {
+		
+		if(null == delete.getWhere()) {
+			Condition cond = new Condition(condition);
+			delete.setWhere(cond);
+		}else {
+			delete.getWhere().add(condition, Operator.OR);
+		}
+		return this;
+	}
+	
+	/**
+	 * Where AND condition setting with lambda function
+	 * <pre>
+	 * 	c2 -> {
+	 *		c2.and("pp = '1'");
+	 *		c2.and("m.f = c");
+	 *	}
+	 * </pre>
+	 **/
+	public DeleteBuilder or(Consumer<ConditionBuilder> condConsumer) {
+		
+		return add(condConsumer, Operator.OR);
+	}
+	
+	private DeleteBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {
+		
+		ConditionBuilder builder = new ConditionBuilder();
+		condConsumer.accept(builder);
+		Condition cond = builder.getCondition();
+		if(null == delete.getWhere()) {
+			
+			delete.setWhere(cond);
+		}else {
+			if(cond.isSingle()) {
+				delete.getWhere().add(cond.toString(), op);
+			}else {
+				delete.getWhere().add( "(" + cond.toString() + ")", op);
+			}
+		}
+	
+		return this;
+	}
+	
+	/**
 	 * Get the delete setting 
 	 **/
 	public Delete getDelete() {

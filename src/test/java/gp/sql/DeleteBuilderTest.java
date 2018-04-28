@@ -24,9 +24,22 @@ public class DeleteBuilderTest {
 			});
 		});
 		
-		sql.toString();
+		System.out.println(sql.toString());
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		sql = SqlBuilder.delete( del -> {
+			del.from("a");
+			
+			del.where("a='c'");
+			del.and("a='b'");
+			del.and(c1 -> {
+				c1.or("c='2c'");
+				c1.or("d=2");
+			});
+		});
 		
 		System.out.println(sql.toString());
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
 	}
 	
 }
