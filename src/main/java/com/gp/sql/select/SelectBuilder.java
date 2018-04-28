@@ -6,8 +6,6 @@ import java.util.function.Consumer;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
-import com.gp.sql.BaseBuilder.Operator;
-import com.gp.sql.delete.DeleteBuilder;
 
 /**
  * The select builder help to weave the select SQL
