@@ -1,107 +1,145 @@
 SQL Builder
 ===========
 
-A dynamic SQL builder for Java language.
-
-[![Build Status](https://secure.travis-ci.org/jonathanhds/sql-builder.png?branch=master)](http://travis-ci.org/jonathanhds/sql-builder)
-
+A dynamic SQL builder for Java language. inspired by 
 Examples
 =======
 Some usage examples:
 Select
 -------
 ```java
-QueryBuilder query = new QueryBuilder().select()
-                                       .column("s.name")
-                                       .column("count(s.impediments) AS total_impediments")
-                                       .from()
-                                       .table("sprint s")
-                                       .groupBy()
-                                       .column("s.name")
-                                       .having()
-                                       .column("total_impediments > 5")
+Select sql = SqlBuilder.select( sel -> {
+	sel.distinct();
+	sel.column("a","b");
+	sel.from("tb1");
+	sel.from(f1 -> {
+		f1.table("t2")
+		.join("b", "b.id = tb1.id")
+		.leftJoin("c", "m.id = c.id")
+		.rightJoin("c1", c1 -> {
+			c1.and("a = 1");
+			c1.and("a = 'c'");
+		});
+	});
+	
+	sel.where(c1 -> {
+		c1.or("c.f = 1");
+		c1.or("a='f'");
+		c1.or( c2 -> {
+			c2.and("pp = '1'");
+			c2.and("m.f = c");
+		});
+	});
+	
+	sel.groupBy( gb -> {
+		gb.column("a","c");
+		gb.having(c1 -> {
+			c1.and("a='4'");
+			c1.and("b = 4");
+		});
+	});
+	
+	sel.orderBy("a","b","c");
+	sel.orderBy("f", OrderType.DESC);
+	
+	sel.limit();
+});
 ```
 
 The output is:
 
 ```sql
-SELECT
-    s.name,
-    count(s.impediments) AS total_impediemnts
-FROM
-    sprint s
-GROUP BY
-    s.name
-HAVING
-    total_impediemnts > 5
+SELECT DISTINCT a, b
+FROM 
+tb1,
+t2
+INNER JOIN b ON b.id = tb1.id 
+LEFT JOIN c ON m.id = c.id 
+RIGHT JOIN c1 ON a = 1 AND a = 'c' 
+WHERE 
+c.f = 1 OR a='f' OR (pp = '1' AND m.f = c)
+GROUP BY a, c 
+HAVING a='4' AND b = 4
+ORDER BY a, b, c, f DESC
+LIMIT ? OFFSET ?
 ```
 Delete
 -------
 ```java
-DeleteQuery query = new DeleteQuery("account a").addWhere("a.id > 666")
-                                                .addWhere("a.creation_date > '2013-01-01'");
+Delete sql = SqlBuilder.delete( del -> {
+			del.from("a");
+			
+			del.where( cond -> {
+				cond.and("a.d = 'a'");
+				cond.and("c.d = 1");
+				cond.and( c1 -> {
+					c1.or("c.f = 1");
+					c1.or("a='f'");
+					c1.or( c2 -> {
+						c2.and("pp = '1'");
+						c2.and("m.f = c");
+					});
+				});
+			});
+		});
 ```
 
 The output is:
 
 ```sql
-DELETE
-FROM
-    account a
-WHERE
-    a.id > 666
-    AND a.creation_date > '2013-01-01'
+DELETE FROM a
+WHERE a.d = 'a' AND c.d = 1 AND (c.f = 1 OR a='f' OR (pp = '1' AND m.f = c))
 ```
 Update
 ---------
 ```java
-UpdateQuery query = new UpdateQuery("employee e").set("e.salary", "50000")
-                                                 .addWhere("e.age > 40")
-                                                 .addWhere("e.genre = 'female'");
+Update sql = SqlBuilder.update( upd -> {
+	upd.table("tb1 z");
+	
+	upd.column("a");
+	upd.column("c", "v");
+	
+	upd.where( cond -> {
+		cond.and("a.d = 'a'");
+		cond.and("c.d = 1");
+		cond.and( c1 -> {
+			c1.or("c.f = 1");
+			c1.or("a='f'");
+			c1.or( c2 -> {
+				c2.and("pp = '1'");
+				c2.and("m.f = c");
+			});
+		});
+	});
+});
 ```
 
 The output is:
 
 ```sql
-UPDATE
-    employee e
-SET
-    e.salary = '50000'
-WHERE
-    e.age > 40
-    AND e.genre = 'female'
+UPDATE tb1 z SET a = ?, c = v
+WHERE a.d = 'a' AND c.d = 1 AND (c.f = 1 OR a='f' OR (pp = '1' AND m.f = c))
 ```
 
 Insert
 -------
 ```java
-InsertQuery query = new InsertQuery("persons").columns("id", "name", "age")
-                                              .values(1, "foo", 30)
-                                              .values(2, "bar", 23)
-                                              .values(3, "hello", 54)
-                                              .values(4, "world", 19);
+Insert sql = SqlBuilder.insert( ins -> {
+			ins.into("tbl1");
+			ins.column("a", "va");
+			ins.column("b", "va1");
+			ins.column( cb -> {
+				cb.columns("c", "b");
+				cb.values("mc", 12);
+			});
+			
+		});
 ```
 
 The output is:
 
 ```sql
-INSERT INTO
-    persons (id, name, age)
-VALUES
-    (1, 'foo', 30),
-    (2, 'bar', 23),
-    (3, 'hello', 54),
-    (4, 'world', 19)
+INSERT INTO tbl1 ( a, b, c, b ) 
+ VALUES ( va, va1, mc, 12 ) 
 ```
 
-Usage
-=======
-To use this library, add this dependency on your pom.xml:
-
-```xml
-<dependency>
-    <groupId>com.github.jonathanhds</groupId>
-    <artifactId>sql-builder</artifactId>
-    <version>1.1</version>
-</dependency>
-```
