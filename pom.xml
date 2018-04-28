@@ -5,30 +5,20 @@
 	<packaging>jar</packaging>
 	<version>1.0</version>
 	<name>sql-builder</name>
-	<url>https://github.com/jonathanhds/sql-builder</url>
+	<url>https://github.com/gary-dgc/sqlbuilder.git</url>
 	<description>A dynamic SQL builder for Java language.</description>
-	<inceptionYear>2013</inceptionYear>
+	<inceptionYear>2017</inceptionYear>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<scm>
-		<connection>scm:git:https://github.com/jonathanhds/sql-builder.git</connection>
-		<developerConnection>scm:git:https://github.com/jonathanhds/sql-builder.git</developerConnection>
-		<url>https://github.com/jonathanhds/sql-builder</url>
-		<tag>1.2</tag>
+		<connection>scm:git:https://github.com/gary-dgc/sqlbuilder.git</connection>
+		<developerConnection>scm:https://github.com/gary-dgc/sqlbuilder.git</developerConnection>
+		<url>https://github.com/gary-dgc/sqlbuilder</url>
+		<tag>1.0</tag>
 	</scm>
-
-	<ciManagement>
-		<system>Travis</system>
-		<url>https://travis-ci.org/jonathanhds/sql-builder</url>
-	</ciManagement>
-
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/jonathanhds/sql-builder/issues</url>
-	</issueManagement>
 
 	<licenses>
 		<license>
@@ -38,22 +28,11 @@
 		</license>
 	</licenses>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
-
 	<developers>
 		<developer>
-			<id>jonathanhds</id>
-			<name>Jonathan Henrique de Souza</name>
-			<email>jonathan.henrique@icloud.com</email>
+			<id>gary-dgc</id>
+			<name>gary diao</name>
+			<email>gary.diao@yahoo.com</email>
 		</developer>
 	</developers>
 
@@ -63,12 +42,6 @@
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest-core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -101,66 +74,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.3</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>2.2.1</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.9.1</version>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 </project>
