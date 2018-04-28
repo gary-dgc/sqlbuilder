@@ -69,12 +69,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder where(String condition) {
 		
-		if(null == delete.getWhere()) {
-			Condition cond = new Condition(condition);
-			delete.setWhere(cond);
-		}else {
-			delete.getWhere().add(condition);
-		}
+		and(condition);
 		return this;
 	}
 	
@@ -89,10 +84,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder where(Consumer<ConditionBuilder> condConsumer) {
 		
-		ConditionBuilder builder = new ConditionBuilder();
-		condConsumer.accept(builder);
-		Condition cond = builder.getCondition();
-		delete.setWhere(cond);
+		and(condConsumer);
 		
 		return this;
 	}
@@ -109,12 +101,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder and(String condition) {
 		
-		if(null == delete.getWhere()) {
-			Condition cond = new Condition(condition);
-			delete.setWhere(cond);
-		}else {
-			delete.getWhere().add(condition, Operator.AND);
-		}
+		add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -144,12 +131,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder or(String condition) {
 		
-		if(null == delete.getWhere()) {
-			Condition cond = new Condition(condition);
-			delete.setWhere(cond);
-		}else {
-			delete.getWhere().add(condition, Operator.OR);
-		}
+		add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -165,6 +147,16 @@ public class DeleteBuilder extends BaseBuilder{
 	public DeleteBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
 		return add(condConsumer, Operator.OR);
+	}
+	
+	private DeleteBuilder add(String condition, Operator op) {
+		if(null == delete.getWhere()) {
+			Condition cond = new Condition(condition);
+			delete.setWhere(cond);
+		}else {
+			delete.getWhere().add(condition, op);
+		}
+		return this;
 	}
 	
 	private DeleteBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {

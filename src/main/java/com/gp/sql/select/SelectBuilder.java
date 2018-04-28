@@ -159,12 +159,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder where(String condition) {
 		
-		if(null == select.getWhere()) {
-			Condition cond = new Condition(condition);
-			select.setWhere(cond);
-		}else {
-			select.getWhere().add(condition);
-		}
+		and(condition);
 		return this;
 	}
 	
@@ -179,10 +174,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder where(Consumer<ConditionBuilder> condConsumer) {
 		
-		ConditionBuilder builder = new ConditionBuilder();
-		condConsumer.accept(builder);
-		Condition cond = builder.getCondition();
-		select.setWhere(cond);
+		and(condConsumer);
 		
 		return this;
 	}
@@ -199,12 +191,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder and(String condition) {
 		
-		if(null == select.getWhere()) {
-			Condition cond = new Condition(condition);
-			select.setWhere(cond);
-		}else {
-			select.getWhere().add(condition, Operator.AND);
-		}
+		add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -234,12 +221,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder or(String condition) {
 		
-		if(null == select.getWhere()) {
-			Condition cond = new Condition(condition);
-			select.setWhere(cond);
-		}else {
-			select.getWhere().add(condition, Operator.OR);
-		}
+		add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -255,6 +237,17 @@ public class SelectBuilder extends BaseBuilder{
 	public SelectBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
 		return add(condConsumer, Operator.OR);
+	}
+	
+	public SelectBuilder add(String condition, Operator op) {
+		
+		if(null == select.getWhere()) {
+			Condition cond = new Condition(condition);
+			select.setWhere(cond);
+		}else {
+			select.getWhere().add(condition, op);
+		}
+		return this;
 	}
 	
 	private SelectBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {

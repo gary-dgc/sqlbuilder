@@ -132,12 +132,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder where(String condition) {
 		
-		if(null == update.getWhere()) {
-			Condition cond = new Condition(condition);
-			update.setWhere(cond);
-		}else {
-			update.getWhere().add(condition);
-		}
+		and(condition);
 		return this;
 	}
 
@@ -151,11 +146,8 @@ public class UpdateBuilder extends BaseBuilder{
 	 * </pre>
 	 **/
 	public UpdateBuilder where(Consumer<ConditionBuilder> condConsumer) {
-		ConditionBuilder builder = new ConditionBuilder();
-		condConsumer.accept(builder);
-		Condition cond = builder.getCondition();
-		update.setWhere(cond);
 		
+		and(condConsumer);
 		return this;
 	}
 
@@ -171,12 +163,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder and(String condition) {
 		
-		if(null == update.getWhere()) {
-			Condition cond = new Condition(condition);
-			update.setWhere(cond);
-		}else {
-			update.getWhere().add(condition, Operator.AND);
-		}
+		add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -206,12 +193,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder or(String condition) {
 		
-		if(null == update.getWhere()) {
-			Condition cond = new Condition(condition);
-			update.setWhere(cond);
-		}else {
-			update.getWhere().add(condition, Operator.OR);
-		}
+		add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -229,6 +211,17 @@ public class UpdateBuilder extends BaseBuilder{
 		return add(condConsumer, Operator.OR);
 	}
 	
+	private UpdateBuilder add(String condition, Operator op) {
+		
+		if(null == update.getWhere()) {
+			Condition cond = new Condition(condition);
+			update.setWhere(cond);
+		}else {
+			update.getWhere().add(condition, op);
+		}
+		return this;
+	}
+
 	private UpdateBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {
 		
 		ConditionBuilder builder = new ConditionBuilder();
