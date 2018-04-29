@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
-import com.gp.sql.WhereAgent;
 
 /**
  * The delete builder help to weave the delete SQL
@@ -42,14 +41,11 @@ public class DeleteBuilder extends BaseBuilder{
 
 	private Delete delete;
 	
-	private WhereAgent whereAgent;
-	
 	/**
 	 * the default constructor 
 	 **/
 	public DeleteBuilder() {
 		delete = new Delete();
-		whereAgent = new WhereAgent(delete);
 	}
 	
 	/**
@@ -105,7 +101,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder and(String condition) {
 		
-		whereAgent.add(condition, Operator.AND);
+		delete.add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -120,7 +116,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder and(Consumer<ConditionBuilder> condConsumer) {
 		
-		whereAgent.add(condConsumer, Operator.AND);
+		delete.add(condConsumer, Operator.AND);
 		return this;
 	}
 	
@@ -136,7 +132,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder or(String condition) {
 		
-		whereAgent.add(condition, Operator.OR);
+		delete.add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -151,7 +147,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
-		whereAgent.add(condConsumer, Operator.OR);
+		delete.add(condConsumer, Operator.OR);
 		return this;
 	}
 	

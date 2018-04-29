@@ -7,7 +7,6 @@ import com.gp.sql.BaseBuilder;
 import com.gp.sql.ColumnBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
-import com.gp.sql.WhereAgent;
 
 /**
  * The update builder help to weave the update SQL
@@ -57,14 +56,12 @@ public class UpdateBuilder extends BaseBuilder{
 
 	Update update;
 	
-	private WhereAgent whereAgent;
 	/**
 	 * The default constructor 
 	 **/
 	public UpdateBuilder() {
 		
 		update = new Update();
-		whereAgent = new WhereAgent(update);
 	}
 	
 	/**
@@ -166,7 +163,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder and(String condition) {
 		
-		whereAgent.add(condition, Operator.AND);
+		update.add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -181,7 +178,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder and(Consumer<ConditionBuilder> condConsumer) {
 		
-		whereAgent.add(condConsumer, Operator.AND);
+		update.add(condConsumer, Operator.AND);
 		return this;
 	}
 	
@@ -197,7 +194,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder or(String condition) {
 		
-		whereAgent.add(condition, Operator.OR);
+		update.add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -212,7 +209,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
-		whereAgent.add(condConsumer, Operator.OR);
+		update.add(condConsumer, Operator.OR);
 		return this;
 	}
 	

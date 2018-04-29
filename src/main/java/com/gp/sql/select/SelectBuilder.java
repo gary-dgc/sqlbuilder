@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
-import com.gp.sql.WhereAgent;
 
 /**
  * The select builder help to weave the select SQL
@@ -74,15 +73,12 @@ public class SelectBuilder extends BaseBuilder{
 
 	private Select select ;
 	
-	private WhereAgent whereAgent;
-	
 	/**
 	 * Default constructor, the default database type is MySql
 	 **/
 	public SelectBuilder() {
 		
 		this.select = new Select();
-		this.whereAgent = new WhereAgent(select);
 	}
 
 	/**
@@ -195,7 +191,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder and(String condition) {
 		
-		whereAgent.add(condition, Operator.AND);
+		select.add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -210,7 +206,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder and(Consumer<ConditionBuilder> condConsumer) {
 		
-		whereAgent.add(condConsumer, Operator.AND);
+		select.add(condConsumer, Operator.AND);
 		return this;
 	}
 	
@@ -226,7 +222,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder or(String condition) {
 		
-		whereAgent.add(condition, Operator.OR);
+		select.add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -241,7 +237,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
-		whereAgent.add(condConsumer, Operator.OR);
+		select.add(condConsumer, Operator.OR);
 		return this;
 	}
 	
