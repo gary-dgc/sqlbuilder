@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
+import com.gp.sql.WhereAgent;
 
 /**
  * The select builder help to weave the select SQL
@@ -73,12 +74,15 @@ public class SelectBuilder extends BaseBuilder{
 
 	private Select select ;
 	
+	private WhereAgent whereAgent;
+	
 	/**
 	 * Default constructor, the default database type is MySql
 	 **/
 	public SelectBuilder() {
 		
 		this.select = new Select();
+		this.whereAgent = new WhereAgent(select);
 	}
 
 	/**
@@ -148,33 +152,33 @@ public class SelectBuilder extends BaseBuilder{
 	}
 	
 	/**
-	 * Select where setting, assign the condition directly, default is AND logic operation
+	 * Select where setting, assign the condition directly, default is AND logic operation<br>
+	 * !!! IMPORTANT !!! - this method will reset the where condition
 	 * 
 	 * <pre>
-	 * 		builder.where("a = 1");
-	 *      builder.where("b = 'c'");
+	 * 	builder.where("a = 1");
+	 *  builder.where("b = 'c'");
 	 *  -- the output is;
-	 *     a = 1 AND b = 'c'
+	 *     b = 'c'
 	 * </pre>
 	 **/
 	public SelectBuilder where(String condition) {
 		
-		and(condition);
+		Condition cond = new Condition(condition);
+		select.setWhere(cond);
 		return this;
 	}
 	
 	/**
-	 * Select where setting with lambda function
-	 * <pre>
-	 * 	c2 -> {
-	 *		c2.and("pp = '1'");
-	 *		c2.and("m.f = c");
-	 *	}
-	 * </pre>
+	 * Select where setting with lambda function<br>
+	 * !!! IMPORTANT !!! - this method will reset the where condition
 	 **/
 	public SelectBuilder where(Consumer<ConditionBuilder> condConsumer) {
 		
-		and(condConsumer);
+		ConditionBuilder cbuilder = new ConditionBuilder();
+		condConsumer.accept(cbuilder);
+		Condition cond = cbuilder.getCondition();
+		select.setWhere(cond);
 		
 		return this;
 	}
@@ -191,7 +195,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder and(String condition) {
 		
-		add(condition, Operator.AND);
+		whereAgent.add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -206,7 +210,8 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder and(Consumer<ConditionBuilder> condConsumer) {
 		
-		return add(condConsumer, Operator.AND);
+		whereAgent.add(condConsumer, Operator.AND);
+		return this;
 	}
 	
 	/**
@@ -221,7 +226,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder or(String condition) {
 		
-		add(condition, Operator.OR);
+		whereAgent.add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -236,36 +241,7 @@ public class SelectBuilder extends BaseBuilder{
 	 **/
 	public SelectBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
-		return add(condConsumer, Operator.OR);
-	}
-	
-	private SelectBuilder add(String condition, Operator op) {
-		
-		if(null == select.getWhere()) {
-			Condition cond = new Condition(condition);
-			select.setWhere(cond);
-		}else {
-			select.getWhere().add(condition, op);
-		}
-		return this;
-	}
-	
-	private SelectBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {
-		
-		ConditionBuilder builder = new ConditionBuilder();
-		condConsumer.accept(builder);
-		Condition cond = builder.getCondition();
-		if(null == select.getWhere()) {
-			
-			select.setWhere(cond);
-		}else {
-			if(cond.isSingle()) {
-				select.getWhere().add(cond.toString(), op);
-			}else {
-				select.getWhere().add( "(" + cond.toString() + ")", op);
-			}
-		}
-	
+		whereAgent.add(condConsumer, Operator.OR);
 		return this;
 	}
 	

@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
+import com.gp.sql.WhereAgent;
 
 /**
  * The delete builder help to weave the delete SQL
@@ -41,11 +42,14 @@ public class DeleteBuilder extends BaseBuilder{
 
 	private Delete delete;
 	
+	private WhereAgent whereAgent;
+	
 	/**
 	 * the default constructor 
 	 **/
 	public DeleteBuilder() {
 		delete = new Delete();
+		whereAgent = new WhereAgent(delete);
 	}
 	
 	/**
@@ -58,33 +62,33 @@ public class DeleteBuilder extends BaseBuilder{
 	}
 	
 	/**
-	 * Delete where setting, assign the condition directly, default is AND logic operation
+	 * Delete where setting, assign the condition directly, default is AND logic operation<br>
+	 * !!! IMPORTANT !!! - this method will reset the where condition
 	 * 
 	 * <pre>
-	 * 		builder.where("a = 1");
-	 *      builder.where("b = 'c'");
+	 * 	builder.where("a = 1");
+	 *  builder.where("b = 'c'");
 	 *  -- the output is;
-	 *     a = 1 AND b = 'c'
+	 *     b = 'c'
 	 * </pre>
 	 **/
 	public DeleteBuilder where(String condition) {
 		
-		and(condition);
+		Condition cond = new Condition(condition);
+		delete.setWhere(cond);
 		return this;
 	}
 	
 	/**
-	 * Delete where setting with lambda function
-	 * <pre>
-	 * 	c2 -> {
-	 *		c2.and("pp = '1'");
-	 *		c2.and("m.f = c");
-	 *	}
-	 * </pre>
+	 * Delete where setting with lambda function<br>
+	 * !!! IMPORTANT !!! - this method will reset the where condition
 	 **/
 	public DeleteBuilder where(Consumer<ConditionBuilder> condConsumer) {
 		
-		and(condConsumer);
+		ConditionBuilder cbuilder = new ConditionBuilder();
+		condConsumer.accept(cbuilder);
+		Condition cond = cbuilder.getCondition();
+		delete.setWhere(cond);
 		
 		return this;
 	}
@@ -101,7 +105,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder and(String condition) {
 		
-		add(condition, Operator.AND);
+		whereAgent.add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -116,7 +120,8 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder and(Consumer<ConditionBuilder> condConsumer) {
 		
-		return add(condConsumer, Operator.AND);
+		whereAgent.add(condConsumer, Operator.AND);
+		return this;
 	}
 	
 	/**
@@ -131,7 +136,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder or(String condition) {
 		
-		add(condition, Operator.OR);
+		whereAgent.add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -146,35 +151,7 @@ public class DeleteBuilder extends BaseBuilder{
 	 **/
 	public DeleteBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
-		return add(condConsumer, Operator.OR);
-	}
-	
-	private DeleteBuilder add(String condition, Operator op) {
-		if(null == delete.getWhere()) {
-			Condition cond = new Condition(condition);
-			delete.setWhere(cond);
-		}else {
-			delete.getWhere().add(condition, op);
-		}
-		return this;
-	}
-	
-	private DeleteBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {
-		
-		ConditionBuilder builder = new ConditionBuilder();
-		condConsumer.accept(builder);
-		Condition cond = builder.getCondition();
-		if(null == delete.getWhere()) {
-			
-			delete.setWhere(cond);
-		}else {
-			if(cond.isSingle()) {
-				delete.getWhere().add(cond.toString(), op);
-			}else {
-				delete.getWhere().add( "(" + cond.toString() + ")", op);
-			}
-		}
-	
+		whereAgent.add(condConsumer, Operator.OR);
 		return this;
 	}
 	
@@ -190,4 +167,5 @@ public class DeleteBuilder extends BaseBuilder{
 
 		return delete.toString();
 	}
+
 }

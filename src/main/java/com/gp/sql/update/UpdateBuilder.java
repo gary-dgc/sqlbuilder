@@ -7,6 +7,7 @@ import com.gp.sql.BaseBuilder;
 import com.gp.sql.ColumnBuilder;
 import com.gp.sql.Condition;
 import com.gp.sql.ConditionBuilder;
+import com.gp.sql.WhereAgent;
 
 /**
  * The update builder help to weave the update SQL
@@ -56,12 +57,14 @@ public class UpdateBuilder extends BaseBuilder{
 
 	Update update;
 	
+	private WhereAgent whereAgent;
 	/**
 	 * The default constructor 
 	 **/
 	public UpdateBuilder() {
 		
 		update = new Update();
+		whereAgent = new WhereAgent(update);
 	}
 	
 	/**
@@ -121,33 +124,33 @@ public class UpdateBuilder extends BaseBuilder{
 	}
 	
 	/**
-	 * Delete where setting, assign the condition directly, default is AND logic operation
-	 * 
+	 * Update where setting, assign the condition directly, default is AND logic operation<br>
+	 * !!! IMPORTANT !!! - this method will reset the where condition
 	 * <pre>
 	 * 		builder.where("a = 1");
 	 *      builder.where("b = 'c'");
 	 *  -- the output is;
-	 *     a = 1 AND b = 'c'
+	 *     b = 'c'
 	 * </pre>
 	 **/
 	public UpdateBuilder where(String condition) {
 		
-		and(condition);
+		Condition cond = new Condition(condition);
+		update.setWhere(cond);
 		return this;
 	}
 
 	/**
-	 * Delete where setting with lambda function
-	 * <pre>
-	 * 	c2 -> {
-	 *		c2.and("pp = '1'");
-	 *		c2.and("m.f = c");
-	 *	}
-	 * </pre>
+	 * Update where setting with lambda function<br>
+	 * !!! IMPORTANT !!! - this method will reset the where condition
 	 **/
 	public UpdateBuilder where(Consumer<ConditionBuilder> condConsumer) {
 		
-		and(condConsumer);
+		ConditionBuilder cbuilder = new ConditionBuilder();
+		condConsumer.accept(cbuilder);
+		Condition cond = cbuilder.getCondition();
+		update.setWhere(cond);
+		
 		return this;
 	}
 
@@ -163,7 +166,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder and(String condition) {
 		
-		add(condition, Operator.AND);
+		whereAgent.add(condition, Operator.AND);
 		return this;
 	}
 	
@@ -178,7 +181,8 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder and(Consumer<ConditionBuilder> condConsumer) {
 		
-		return add(condConsumer, Operator.AND);
+		whereAgent.add(condConsumer, Operator.AND);
+		return this;
 	}
 	
 	/**
@@ -193,7 +197,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder or(String condition) {
 		
-		add(condition, Operator.OR);
+		whereAgent.add(condition, Operator.OR);
 		return this;
 	}
 	
@@ -208,36 +212,7 @@ public class UpdateBuilder extends BaseBuilder{
 	 **/
 	public UpdateBuilder or(Consumer<ConditionBuilder> condConsumer) {
 		
-		return add(condConsumer, Operator.OR);
-	}
-	
-	private UpdateBuilder add(String condition, Operator op) {
-		
-		if(null == update.getWhere()) {
-			Condition cond = new Condition(condition);
-			update.setWhere(cond);
-		}else {
-			update.getWhere().add(condition, op);
-		}
-		return this;
-	}
-
-	private UpdateBuilder add(Consumer<ConditionBuilder> condConsumer, Operator op) {
-		
-		ConditionBuilder builder = new ConditionBuilder();
-		condConsumer.accept(builder);
-		Condition cond = builder.getCondition();
-		if(null == update.getWhere()) {
-			
-			update.setWhere(cond);
-		}else {
-			if(cond.isSingle()) {
-				update.getWhere().add(cond.toString(), op);
-			}else {
-				update.getWhere().add( "(" + cond.toString() + ")", op);
-			}
-		}
-	
+		whereAgent.add(condConsumer, Operator.OR);
 		return this;
 	}
 	

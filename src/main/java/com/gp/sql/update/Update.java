@@ -3,7 +3,7 @@ package com.gp.sql.update;
 import java.util.List;
 import com.google.common.collect.Lists;
 import com.gp.sql.BaseBuilder;
-import com.gp.sql.Condition;
+import com.gp.sql.WhereSupport;
 
 /**
  * The update setting
@@ -13,15 +13,13 @@ import com.gp.sql.Condition;
  * @date 2017-12-1
  * 
  **/
-public class Update {
+public class Update extends WhereSupport{
 	
 	private String table;
 
 	final List<String> columns = Lists.newArrayList();
 	
 	final List<Object> values = Lists.newArrayList();
-	
-	private Condition condition;
 	
 	/**
 	 * Setter of table 
@@ -36,22 +34,6 @@ public class Update {
 	public void setColumn(String column, Object value) {
 		columns.add(column);
 		values.add(value);
-	}
-	
-	/**
-	 * Set the where condition 
-	 **/
-	public void setWhere(Condition condition) {
-		
-		this.condition = condition;
-	}
-	
-	/**
-	 * Get the where condition 
-	 **/
-	public Condition getWhere() {
-		
-		return this.condition;
 	}
 	
 	@Override
@@ -71,10 +53,10 @@ public class Update {
 			}
 		}
 		
-		if(condition != null && !condition.isEmpty()) {
+		if(this.getWhere() != null && !this.getWhere().isEmpty()) {
 			builder.append(BaseBuilder.NEW_LINE);
 			builder.append("WHERE ");
-			builder.append(condition.toString());
+			builder.append(this.getWhere().toString());
 		}
 		return builder.toString();
 	}

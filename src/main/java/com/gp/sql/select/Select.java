@@ -8,7 +8,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.BaseBuilder.OrderType;
-import com.gp.sql.Condition;
+import com.gp.sql.WhereSupport;
 
 /**
  * Select SQL clause settings
@@ -18,7 +18,7 @@ import com.gp.sql.Condition;
  * @date 2017-12-1
  * 
  **/
-public class Select {
+public class Select extends WhereSupport{
 	
 	final List<String> columns = Lists.newArrayList();
 	
@@ -27,8 +27,6 @@ public class Select {
 	private GroupBy groupBy = null;
 	
 	List<SimpleEntry<String, OrderType>> orderbys = null;
-	
-	private Condition where;
 		
 	private boolean distinct = false;
 	
@@ -46,20 +44,6 @@ public class Select {
 	 **/
 	public void setLimiter(Limiter limiter) {
 		this.limiter = limiter;
-	}
-	
-	/**
-	 * Set the where condition 
-	 **/
-	public void setWhere(Condition condition) {
-		this.where = condition;
-	}
-	
-	/**
-	 * Get the where condition 
-	 **/
-	public Condition getWhere() {
-		return this.where;
 	}
 	
 	/**
@@ -110,9 +94,9 @@ public class Select {
 		builder.append(Joiner.on("," + BaseBuilder.NEW_LINE).join(tables));
 		builder.append(BaseBuilder.NEW_LINE);
 		
-		if(null != where) {
+		if(null != this.getWhere()) {
 			builder.append("WHERE ").append(BaseBuilder.NEW_LINE);
-			builder.append(where.toString()).append(BaseBuilder.NEW_LINE);
+			builder.append(this.getWhere().toString()).append(BaseBuilder.NEW_LINE);
 		}
 		
 		if(null != groupBy) {

@@ -1,7 +1,7 @@
 package com.gp.sql.delete;
 
 import com.gp.sql.BaseBuilder;
-import com.gp.sql.Condition;
+import com.gp.sql.WhereSupport;
 
 /**
  * Delete clause setting holder
@@ -11,31 +11,15 @@ import com.gp.sql.Condition;
  * @date 2017-12-3
  * 
  **/
-public class Delete {
+public class Delete extends WhereSupport{
 	
 	private String table;
 	
-	private Condition where;
-
 	/**
 	 * Set the table 
 	 **/
 	public void setTable(String table) {
 		this.table = table;
-	}
-
-	/**
-	 * Set the where condition 
-	 **/
-	public void setWhere(Condition condition) {
-		this.where = condition;
-	}
-	
-	/**
-	 * Get the condition 
-	 **/
-	public Condition getWhere() {
-		return this.where;
 	}
 	
 	@Override
@@ -44,10 +28,10 @@ public class Delete {
 		builder.append("DELETE FROM ");
 		builder.append(table);
 		
-		if(null != where && !where.isEmpty()) {
+		if(null != this.getWhere() && !this.getWhere().isEmpty()) {
 			builder.append(BaseBuilder.NEW_LINE);
 			builder.append("WHERE ");
-			builder.append(where.toString());
+			builder.append(this.getWhere().toString());
 		}
 		return builder.toString();
 	}
