@@ -1,5 +1,7 @@
 package com.gp.sql.delete;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.WhereSupport;
 
@@ -19,19 +21,24 @@ public class Delete extends WhereSupport{
 	 * Set the table 
 	 **/
 	public void setTable(String table) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(table), "table mustn't be null");
 		this.table = table;
 	}
 	
 	@Override
 	public String toString() {
+		
 		StringBuilder builder = new StringBuilder();
-		builder.append("DELETE FROM ");
-		builder.append(table);
+		
+		builder.append("DELETE FROM ").append(BaseBuilder.NEW_LINE);
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(table), "table is required");
+		
+		builder.append(BaseBuilder.INDENT).append(table);
 		
 		if(null != this.getWhere() && !this.getWhere().isEmpty()) {
 			builder.append(BaseBuilder.NEW_LINE);
-			builder.append("WHERE ");
-			builder.append(this.getWhere().toString());
+			builder.append("WHERE ").append(BaseBuilder.NEW_LINE);
+			builder.append(BaseBuilder.INDENT).append(this.getWhere().toString());
 		}
 		return builder.toString();
 	}

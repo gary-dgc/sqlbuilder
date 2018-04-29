@@ -44,7 +44,7 @@ public abstract class BaseBuilder {
 	private Database database = Database.MYSQL;
 	
 	public static String NEW_LINE = System.getProperty("line.separator");
-	
+	public static String INDENT = "  ";
 	/**
 	 * The build method  
 	 **/

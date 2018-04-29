@@ -1,6 +1,9 @@
 package com.gp.sql.update;
 
 import java.util.List;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.WhereSupport;
@@ -25,6 +28,7 @@ public class Update extends WhereSupport{
 	 * Setter of table 
 	 **/
 	public void setTable(String table) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(table), "table mustn't be null");
 		this.table = table;
 	}
 	
@@ -40,8 +44,14 @@ public class Update extends WhereSupport{
 	public String toString() {
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append("UPDATE ").append(table).append(" SET ");
 		
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(table), "table is required");
+		builder.append("UPDATE ").append(BaseBuilder.NEW_LINE);
+		builder.append(BaseBuilder.INDENT).append(table).append(BaseBuilder.NEW_LINE);
+		
+		builder.append("SET ").append(BaseBuilder.NEW_LINE);
+		Preconditions.checkArgument(columns.size() > 0, "columns is required");
+		builder.append(BaseBuilder.INDENT);
 		for (int i = 0; i < columns.size(); i++) {
 			
 			builder.append(columns.get(i))
@@ -55,8 +65,8 @@ public class Update extends WhereSupport{
 		
 		if(this.getWhere() != null && !this.getWhere().isEmpty()) {
 			builder.append(BaseBuilder.NEW_LINE);
-			builder.append("WHERE ");
-			builder.append(this.getWhere().toString());
+			builder.append("WHERE ").append(BaseBuilder.NEW_LINE);
+			builder.append(BaseBuilder.INDENT).append(this.getWhere().toString());
 		}
 		return builder.toString();
 	}

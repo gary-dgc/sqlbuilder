@@ -41,6 +41,7 @@ class From {
 			
 			for(int i = 0; i < joins.size(); i++ ) {
 				Join join = joins.get(i);
+				builder.append(BaseBuilder.INDENT);
 				builder.append(join.toString());
 				
 				if(i != joins.size() - 1)

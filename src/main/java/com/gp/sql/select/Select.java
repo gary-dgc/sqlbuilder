@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.gp.sql.BaseBuilder;
 import com.gp.sql.BaseBuilder.OrderType;
@@ -57,6 +59,7 @@ public class Select extends WhereSupport{
 	 * Add table 
 	 **/
 	public void addTable(String table) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(table), "table mustn't be null");
 		tables.add(table);
 	}
 	
@@ -79,8 +82,13 @@ public class Select extends WhereSupport{
 	
 	@Override
 	public String toString() {
+		Preconditions.checkArgument(tables.size() > 0, "from table is required");
+		Preconditions.checkArgument(columns.size() > 0, "columns is required");
+		
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT ");
+		builder.append("SELECT ").append(BaseBuilder.NEW_LINE);
+		
+		builder.append(BaseBuilder.INDENT);
 		if(distinct) {
 			builder.append("DISTINCT ");
 		}
@@ -91,20 +99,24 @@ public class Select extends WhereSupport{
 		}
 		
 		builder.append("FROM ").append(BaseBuilder.NEW_LINE);
-		builder.append(Joiner.on("," + BaseBuilder.NEW_LINE).join(tables));
+		builder.append(BaseBuilder.INDENT);
+		builder.append(Joiner.on("," + BaseBuilder.NEW_LINE + BaseBuilder.INDENT).join(tables));
 		builder.append(BaseBuilder.NEW_LINE);
 		
 		if(null != this.getWhere()) {
 			builder.append("WHERE ").append(BaseBuilder.NEW_LINE);
+			builder.append(BaseBuilder.INDENT);
 			builder.append(this.getWhere().toString()).append(BaseBuilder.NEW_LINE);
 		}
 		
 		if(null != groupBy) {
-			builder.append("GROUP BY ").append(groupBy.toString()).append(BaseBuilder.NEW_LINE);
+			builder.append("GROUP BY ").append(BaseBuilder.NEW_LINE);
+			builder.append(BaseBuilder.INDENT).append(groupBy.toString()).append(BaseBuilder.NEW_LINE);
 		}
 		
 		if(null != orderbys && !orderbys.isEmpty()) {
-			builder.append("ORDER BY ");
+			builder.append("ORDER BY ").append(BaseBuilder.NEW_LINE);
+			builder.append(BaseBuilder.INDENT);
 			for(int i = 0; i < orderbys.size(); i++) {
 				SimpleEntry<String, OrderType> entry = orderbys.get(i);
 				

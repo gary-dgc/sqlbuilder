@@ -3,6 +3,7 @@ package com.gp.sql.insert;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.gp.sql.BaseBuilder;
@@ -18,7 +19,7 @@ public class Insert {
 	
 	private String table;
 	
-	List<String> columns = Lists.newArrayList();
+	final List<String> columns = Lists.newArrayList();
 	
 	List<Object> values = Lists.newArrayList();
 	
@@ -28,6 +29,7 @@ public class Insert {
 	 * Set table 
 	 **/
 	public void setTable(String table) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(table), "table mustn't be null");
 		this.table = table;
 	}
 	
@@ -48,19 +50,22 @@ public class Insert {
 	
 	@Override
 	public String toString() {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(table), "table is required");
+		Preconditions.checkArgument(columns.size() > 0, "columns is required");
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append("INSERT INTO ");
-		builder.append(table);
+		builder.append("INSERT INTO ").append(BaseBuilder.NEW_LINE);
+		builder.append(BaseBuilder.INDENT).append(table);
 		builder.append(" ( ");
 		builder.append(Joiner.on(", ").join(columns));
 		builder.append(" ) ");
 		builder.append(BaseBuilder.NEW_LINE);
 		
 		if(!Strings.isNullOrEmpty(select)) {
-			builder.append(select);
+			builder.append(BaseBuilder.INDENT).append(select);
 		}else {
-			builder.append(" VALUES ( ");
+			builder.append("VALUES ").append(BaseBuilder.NEW_LINE);
+			builder.append(BaseBuilder.INDENT).append("(");
 			builder.append(Joiner.on(", ").join(values));
 			builder.append(" ) ");
 		}
