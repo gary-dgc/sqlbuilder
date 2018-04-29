@@ -83,7 +83,6 @@ public class Select extends WhereSupport{
 	@Override
 	public String toString() {
 		Preconditions.checkArgument(tables.size() > 0, "from table is required");
-		Preconditions.checkArgument(columns.size() > 0, "columns is required");
 		
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ").append(BaseBuilder.NEW_LINE);
