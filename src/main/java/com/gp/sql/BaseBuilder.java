@@ -45,6 +45,7 @@ public abstract class BaseBuilder {
 	
 	public static String NEW_LINE = System.getProperty("line.separator");
 	public static String INDENT = "  ";
+	
 	/**
 	 * The build method  
 	 **/
