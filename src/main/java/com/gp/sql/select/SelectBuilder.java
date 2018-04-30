@@ -294,6 +294,20 @@ public class SelectBuilder extends BaseBuilder{
 	}
 	
 	/**
+	 * for update builder 
+	 **/
+	public SelectBuilder forUpdate() {
+		select.forUpdate(false);
+		return this;
+	}
+	
+	public SelectBuilder forUpdate(boolean noWait) {
+		
+		this.forUpdate(noWait);
+		return this;
+	}
+	
+	/**
 	 * Assign limiter
 	 **/
 	public SelectBuilder limit(int start, int size) {

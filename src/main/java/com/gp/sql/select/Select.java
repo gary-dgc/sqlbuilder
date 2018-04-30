@@ -34,6 +34,10 @@ public class Select extends WhereSupport{
 	
 	private Limiter limiter;
 	
+	private boolean forUpdate = false;
+	
+	private boolean noWait = false;
+	
 	/**
 	 * Set the group by 
 	 **/
@@ -78,6 +82,11 @@ public class Select extends WhereSupport{
 		if(orderbys  == null) orderbys = Lists.newArrayList();
 		SimpleEntry<String, OrderType> entry = new SimpleEntry<String, OrderType>(column, order);
 		orderbys.add(entry);
+	}
+	
+	public void forUpdate(boolean noWait) {
+		this.forUpdate = true;
+		this.noWait = noWait;
 	}
 	
 	@Override
@@ -129,6 +138,13 @@ public class Select extends WhereSupport{
 				}
 			}
 			builder.append(BaseBuilder.NEW_LINE);
+		}
+		
+		if (forUpdate) {
+			builder.append("FOR UPDATE");
+            if (noWait) {
+            	builder.append(" NOWAIT");
+            }
 		}
 		
 		if(null != limiter) {
