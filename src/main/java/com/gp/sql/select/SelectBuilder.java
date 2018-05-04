@@ -116,6 +116,14 @@ public class SelectBuilder extends BaseBuilder{
 	}
 	
 	/**
+	 * Assign select columns
+	 **/
+	public SelectBuilder resetColumn(String ...columns) {
+		select.columns.clear();
+		return column(columns);
+	}
+	
+	/**
 	 * Specify the distinct 
 	 **/
 	public SelectBuilder distinct() {
@@ -144,6 +152,15 @@ public class SelectBuilder extends BaseBuilder{
 		From from = builder.getFrom();
 		
 		select.addTable(from.toString());
+		return this;
+	}
+	
+	/**
+	 * Assign select from table 
+	 **/
+	public SelectBuilder resetFrom(String table) {
+		this.select.tables.clear();
+		this.select.addTable(table);
 		return this;
 	}
 	

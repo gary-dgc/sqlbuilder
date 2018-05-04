@@ -24,7 +24,7 @@ public class Select extends WhereSupport{
 	
 	final List<String> columns = Lists.newArrayList();
 	
-	private final List<String> tables = new ArrayList<>();
+	final List<String> tables = new ArrayList<>();
 	
 	private GroupBy groupBy = null;
 	
