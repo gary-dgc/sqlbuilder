@@ -114,7 +114,7 @@ public class UpdateBuilder extends BaseBuilder{
 	/**
 	 * Assign the column and value 
 	 **/
-	public UpdateBuilder column(String column, Object value) {
+	public UpdateBuilder columnValue(String column, Object value) {
 		
 		update.setColumn(column, value);
 		return this;

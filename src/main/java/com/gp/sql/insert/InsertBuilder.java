@@ -114,7 +114,7 @@ public class InsertBuilder extends BaseBuilder{
 	 * Assign the column with value
 	 * 
 	 **/
-	public InsertBuilder column(String column, Object value) {
+	public InsertBuilder columnValue(String column, Object value) {
 		
 		insert.setColumn(column, value);
 		return this;
