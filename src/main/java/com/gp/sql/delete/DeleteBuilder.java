@@ -37,7 +37,7 @@ import com.gp.sql.ConditionBuilder;
  * @date 2017-12-2
  * 
  **/
-public class DeleteBuilder extends BaseBuilder{
+public class DeleteBuilder extends BaseBuilder implements Cloneable{
 
 	private Delete delete;
 	
@@ -164,4 +164,12 @@ public class DeleteBuilder extends BaseBuilder{
 		return delete.toString();
 	}
 
+	@Override
+	public DeleteBuilder clone() {
+		Delete delete = new Delete(this.delete);
+		DeleteBuilder builder = new DeleteBuilder() ;
+		builder.delete = delete;
+		
+		return builder;
+	}
 }

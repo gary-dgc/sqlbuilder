@@ -26,6 +26,20 @@ public class Insert {
 	private String select ;
 	
 	/**
+	 * default constructor 
+	 **/
+	public Insert() {}
+	
+	/**
+	 * constructor to replace the clone implementation 
+	 **/
+	public Insert(Insert insert) {
+		this.table = insert.table;
+		this.columns.addAll(insert.columns);
+		this.select = insert.select;
+	}
+	
+	/**
 	 * Set table 
 	 **/
 	public void setTable(String table) {

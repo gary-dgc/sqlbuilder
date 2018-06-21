@@ -69,7 +69,7 @@ import com.gp.sql.ConditionBuilder;
  * @date 2017-12-1
  * 
  **/
-public class SelectBuilder extends BaseBuilder{
+public class SelectBuilder extends BaseBuilder implements Cloneable{
 
 	private Select select ;
 	
@@ -107,20 +107,17 @@ public class SelectBuilder extends BaseBuilder{
 	}
 	
 	/**
-	 * Assign select columns
+	 * Assign select columns <br>
+	 * !!! Important !!! column decide clear column pair or not.
+	 * @param columns if columns is null or length is 0, all the columns be cleared.
 	 **/
 	public SelectBuilder column(String ...columns) {
-		
+		if(columns == null || columns.length == 0) {
+			select.columns.clear();
+			return this;
+		}
 		Collections.addAll(select.columns, columns);
 		return this;
-	}
-	
-	/**
-	 * Assign select columns
-	 **/
-	public SelectBuilder resetColumn(String ...columns) {
-		select.columns.clear();
-		return column(columns);
 	}
 	
 	/**
@@ -140,7 +137,16 @@ public class SelectBuilder extends BaseBuilder{
 		this.select.addTable(table);
 		return this;
 	}
-		
+	
+	/**
+	 * Assign select from table 
+	 **/
+	public SelectBuilder resetFrom(String table) {
+		this.select.tables.clear();
+		this.select.addTable(table);
+		return this;
+	}
+	
 	/**
 	 * Assign the from with lambda function to help build join clause 
 	 **/
@@ -152,15 +158,6 @@ public class SelectBuilder extends BaseBuilder{
 		From from = builder.getFrom();
 		
 		select.addTable(from.toString());
-		return this;
-	}
-	
-	/**
-	 * Assign select from table 
-	 **/
-	public SelectBuilder resetFrom(String table) {
-		this.select.tables.clear();
-		this.select.addTable(table);
 		return this;
 	}
 	
@@ -338,5 +335,14 @@ public class SelectBuilder extends BaseBuilder{
 	public String build() {
 		
 		return select.toString();
+	}
+	
+	@Override
+	public SelectBuilder clone() {
+		Select select = new Select(this.select);
+		SelectBuilder builder = new SelectBuilder() ;
+		builder.select = select;
+		
+		return builder;
 	}
 }

@@ -40,7 +40,7 @@ import com.gp.sql.ColumnBuilder;
  * @version 0.1
  * @date 2017-12-1
  **/
-public class InsertBuilder extends BaseBuilder{
+public class InsertBuilder extends BaseBuilder implements Cloneable{
 
 	private Insert insert;
 	
@@ -90,23 +90,20 @@ public class InsertBuilder extends BaseBuilder{
 	}
 	
 	/**
-	 * Assign the columns with default question mark
+	 * Assign the columns with default question mark as value place holder. <br>
+	 * !!! Important !!! column decide clear column pair or not.
+	 * 
+	 * @param column if column is null or length is 0, all the column value pairs be cleared.
 	 **/
 	public InsertBuilder column(String ...column) {
-		if(column == null || column.length == 0) return this;
+		if(column == null || column.length == 0) {
+			insert.columns.clear();
+			insert.values.clear();
+			return this;
+		}
 		for(String col: column) {
 			insert.setColumn(col, "?");
 		}
-		return this;
-	}
-	
-	/**
-	 * Assign the column with question mark as value place holder
-	 * 
-	 **/
-	public InsertBuilder column(String column) {
-		
-		insert.setColumn(column, "?");
 		return this;
 	}
 	
@@ -133,5 +130,14 @@ public class InsertBuilder extends BaseBuilder{
 	public String build() {
 		
 		return insert.toString();
+	}
+	
+	@Override
+	public InsertBuilder clone() {
+		Insert insert = new Insert(this.insert);
+		InsertBuilder builder = new InsertBuilder() ;
+		builder.insert = insert;
+		
+		return builder;
 	}
 }

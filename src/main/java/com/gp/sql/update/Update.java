@@ -25,6 +25,21 @@ public class Update extends WhereSupport{
 	final List<Object> values = Lists.newArrayList();
 	
 	/**
+	 * default constructor 
+	 **/
+	public Update() {}
+	
+	/**
+	 * constructor to replace the clone implementation 
+	 **/
+	public Update(Update update) {
+		this.table = update.table;
+		this.columns.addAll(update.columns);
+		this.values.addAll(update.values);
+		this.setWhere(update.getWhere());
+	}
+	
+	/**
 	 * Setter of table 
 	 **/
 	public void setTable(String table) {

@@ -8,7 +8,7 @@ package com.gp.sql;
  * @version v 0.1 2017-12-2
  * 
  **/
-public abstract class BaseBuilder {
+public abstract class BaseBuilder{
 
 	/**
 	 * The where clause logic expression operator 
@@ -45,7 +45,6 @@ public abstract class BaseBuilder {
 	
 	public static String NEW_LINE = System.getProperty("line.separator");
 	public static String INDENT = "  ";
-	
 	/**
 	 * The build method  
 	 **/
@@ -70,4 +69,5 @@ public abstract class BaseBuilder {
 		
 		return build();
 	}
+
 }

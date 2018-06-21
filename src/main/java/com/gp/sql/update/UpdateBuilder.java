@@ -52,7 +52,7 @@ import com.gp.sql.ConditionBuilder;
  * @date 2017-12-1
  * 
  **/
-public class UpdateBuilder extends BaseBuilder{
+public class UpdateBuilder extends BaseBuilder implements Cloneable{
 
 	Update update;
 	
@@ -100,11 +100,18 @@ public class UpdateBuilder extends BaseBuilder{
 	}
 	
 	/**
-	 * Assign the columns with default question mark
+	 * Assign the columns with default question mark as value place holder. <br>
+	 * !!! Important !!! column decide clear column pair or not.
+	 * 
+	 * @param column if column is null or length is 0, all the column value pairs be cleared.
 	 **/
 	public UpdateBuilder column(String ... column) {
 		
-		if(column == null || column.length == 0) return this;
+		if(column == null || column.length == 0) {
+			update.columns.clear();
+			update.values.clear();
+			return this;
+		}
 		for(String col: column) {
 			update.setColumn(col, "?");
 		}
@@ -114,7 +121,7 @@ public class UpdateBuilder extends BaseBuilder{
 	/**
 	 * Assign the column and value 
 	 **/
-	public UpdateBuilder columnValue(String column, Object value) {
+	public UpdateBuilder value(String column, Object value) {
 		
 		update.setColumn(column, value);
 		return this;
@@ -219,4 +226,12 @@ public class UpdateBuilder extends BaseBuilder{
 		return update.toString();
 	}
 
+	@Override
+	public UpdateBuilder clone() {
+		Update update = new Update(this.update);
+		UpdateBuilder builder = new UpdateBuilder() ;
+		builder.update = update;
+		
+		return builder;
+	}
 }

@@ -39,6 +39,33 @@ public class Select extends WhereSupport{
 	private boolean noWait = false;
 	
 	/**
+	 * default constructor 
+	 **/
+	public Select() {}
+	
+	/**
+	 * constructor to replace the clone implementation 
+	 **/
+	public Select(Select select) {
+		this.columns.addAll(select.columns);
+		this.tables.addAll(select.tables);
+		this.groupBy = select.groupBy;
+		if(null != orderbys) {
+			this.orderbys = Lists.newArrayList();
+			for(SimpleEntry<String, OrderType> orderby: select.orderbys) {
+				
+				SimpleEntry<String, OrderType> norderby = new SimpleEntry<String, OrderType>(orderby.getKey(), orderby.getValue());
+				this.orderbys.add(norderby);
+			}
+		}
+		this.distinct = select.distinct;
+		this.limiter = select.limiter;
+		this.forUpdate = select.forUpdate;
+		this.noWait = select.noWait;
+		this.setWhere(select.getWhere());
+	}
+	
+	/**
 	 * Set the group by 
 	 **/
 	public void setGroupBy(GroupBy groupBy) {

@@ -18,6 +18,19 @@ public class Delete extends WhereSupport{
 	private String table;
 	
 	/**
+	 * default constructor 
+	 **/
+	public Delete() {}
+	
+	/**
+	 * constructor to replace the clone implementation 
+	 **/
+	public Delete(Delete delete) {
+		this.table = delete.table;
+		this.setWhere(delete.getWhere());
+	}
+	
+	/**
 	 * Set the table 
 	 **/
 	public void setTable(String table) {
