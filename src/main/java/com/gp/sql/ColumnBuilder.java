@@ -36,6 +36,15 @@ public class ColumnBuilder {
 	}
 	
 	/**
+	 * Assign the column with value 
+	 **/
+	public ColumnBuilder set(String column, Object value) {
+		columns = new String[] {column};
+		values = new Object[] {value};
+		return this;
+	}
+	
+	/**
 	 * Columns getter 
 	 **/
 	public String[] getColumns() {
