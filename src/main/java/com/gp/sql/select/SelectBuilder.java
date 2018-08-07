@@ -241,11 +241,11 @@ public class SelectBuilder extends BaseBuilder implements Cloneable{
 	}
 	
 	/**
-	 * Where AND condition setting with lambda function
+	 * Where OR condition setting with lambda function
 	 * <pre>
 	 * 	c2 -> {
-	 *		c2.and("pp = '1'");
-	 *		c2.and("m.f = c");
+	 *		c2.or("pp = '1'");
+	 *		c2.or("m.f = c");
 	 *	}
 	 * </pre>
 	 **/

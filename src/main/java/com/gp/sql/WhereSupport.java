@@ -31,7 +31,16 @@ public class WhereSupport {
 			Condition cond = new Condition(condition);
 			where = cond;
 		}else {
-			where.add(condition, op);
+			if(where.isSingle()) {
+				where.add(condition, op);
+			}else if(where.op == op){
+				where.add(condition, op);
+			}else {
+				
+				Condition cond = new Condition("(" + where.toString() + ")");
+				cond.add(condition, op);
+				where = cond;
+			}
 		}
 	}
 	
