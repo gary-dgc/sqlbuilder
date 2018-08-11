@@ -121,7 +121,7 @@ public class UpdateBuilder extends BaseBuilder implements Cloneable{
 	/**
 	 * Assign the column and value 
 	 **/
-	public UpdateBuilder value(String column, Object value) {
+	public UpdateBuilder set(String column, Object value) {
 		
 		update.setColumn(column, value);
 		return this;

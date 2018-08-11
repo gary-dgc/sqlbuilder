@@ -111,7 +111,7 @@ public class InsertBuilder extends BaseBuilder implements Cloneable{
 	 * Assign the column with value
 	 * 
 	 **/
-	public InsertBuilder value(String column, Object value) {
+	public InsertBuilder set(String column, Object value) {
 		
 		insert.setColumn(column, value);
 		return this;
