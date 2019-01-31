@@ -54,8 +54,12 @@ public class WhereSupport {
 		Condition cond = cbuilder.getCondition();
 		
 		if(null == where) {
-			
-			where = cond;
+			if(cond.isSingle()) {
+				where = cond;
+			}else {
+				where = new Condition();
+				where.add( "(" + cond.toString() + ")", op);
+			}
 		}else {
 			if(cond.isSingle()) {
 				where.add(cond.toString(), op);
